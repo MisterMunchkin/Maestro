@@ -412,6 +412,7 @@ data class AssertCommand(
 data class AssertConditionCommand(
     val condition: Condition,
     val timeout: String? = null,
+    val aiFallback: String? = null,
     override val label: String? = null,
     override val optional: Boolean = false,
 ) : Command {
@@ -430,6 +431,7 @@ data class AssertConditionCommand(
         return copy(
             condition = condition.evaluateScripts(jsEngine),
             timeout = timeout?.evaluateScripts(jsEngine),
+            aiFallback = aiFallback?.evaluateScripts(jsEngine),
             label = label?.evaluateScripts(jsEngine)
         )
     }
