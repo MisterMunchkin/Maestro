@@ -353,7 +353,26 @@ class Orchestra(
             is SwipeCommand -> swipeCommand(command)
             is AssertCommand -> assertCommand(command)
             is AssertScreenshotCommand -> assertScreenshotCommand(command)
-            is AssertConditionCommand -> assertConditionCommand(command)
+            is AssertConditionCommand -> {
+                val aiFallback = command.aiFallback
+                try {
+                    assertConditionCommand(command)
+                } catch (e: MaestroException.AssertionFailure) {
+                    if (aiFallback != null && AIPredictionEngine != null) {
+                        logger.info("Deterministic assertion failed, falling back to AI assertion: '$aiFallback'")
+                        try {
+                            assertWithAICommand(
+                                AssertWithAICommand(assertion = aiFallback),
+                                maestroCommand
+                            )
+                        } catch (aiException: Throwable) {
+                            throw e
+                        }
+                    } else {
+                        throw e
+                    }
+                }
+            }
             is AssertNoDefectsWithAICommand -> assertNoDefectsWithAICommand(command, maestroCommand)
             is AssertWithAICommand -> assertWithAICommand(command, maestroCommand)
             is ExtractTextWithAICommand -> extractTextWithAICommand(command, maestroCommand)

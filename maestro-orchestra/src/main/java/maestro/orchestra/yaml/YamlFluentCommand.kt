@@ -165,6 +165,7 @@ data class YamlFluentCommand(
                         condition = Condition(
                             visible = toElementSelector(assertVisible),
                         ),
+                        aiFallback = (assertVisible as? YamlElementSelector)?.aiFallback,
                         label = (assertVisible as? YamlElementSelector)?.label,
                         optional = (assertVisible as? YamlElementSelector)?.optional ?: false,
                     )
@@ -707,6 +708,8 @@ data class YamlFluentCommand(
             throw SyntaxError("extendedWaitUntil expects either `visible` or `notVisible` to be provided")
         }
 
+        val aiFallback = (command.visible as? YamlElementSelector)?.aiFallback
+
         val condition = Condition(
             visible = command.visible?.let { toElementSelector(it) },
             notVisible = command.notVisible?.let { toElementSelector(it) },
@@ -716,6 +719,7 @@ data class YamlFluentCommand(
             AssertConditionCommand(
                 condition = condition,
                 timeout = command.timeout,
+                aiFallback = aiFallback,
                 label = command.label,
                 optional = command.optional,
             )
