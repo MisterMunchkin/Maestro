@@ -91,7 +91,7 @@ steps:
 
 `ClaudeCodePredictionEngine.isAvailable()` checks whether `claude` exists on `PATH`. When the CLI is found, Maestro uses it for all AI operations. The `CLAUDE_CODE_OAUTH_TOKEN` env var provides authentication — the Claude CLI reads it automatically, no interactive login needed.
 
-Without the CLI or token, AI assertions are skipped: `aiFallback` assertions fall through to the original deterministic error, and `assertWithAI` throws `CloudApiKeyNotAvailable`.
+Without the CLI, AI assertions are skipped: `aiFallback` assertions fall through to the original deterministic error, and `assertWithAI` throws `CloudApiKeyNotAvailable`. Note: if the CLI is installed but authentication is missing or expired, assertions will fail at runtime with a CLI process error rather than skipping gracefully.
 
 ### Notes
 
